@@ -159,13 +159,13 @@
           if (doc.exists) {
             let data = doc.data();
             console.log("Document data:", data);
-            if (data.ownModals.indexof(this.model) !== -1) {
+            if (data.ownModals.indexOf(this.model) !== -1) {
               data.ownModals.push(this.model);
               docRef.set(data);
             }
           } else {
             console.log("No such document!");
-            docRef.set({
+            db.collection("users").doc(this.profile.userId).set({
               ... this.profile,
               ownModals: [this.model],
               wifiList: this.wifiList,
