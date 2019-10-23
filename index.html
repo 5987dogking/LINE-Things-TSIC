@@ -159,7 +159,7 @@
           if (doc.exists) {
             let data = doc.data();
             console.log("Document data:", data);
-            if (data.ownModals.indexOf(this.model) !== -1) {
+            if (data.ownModals.indexOf(this.model) === -1) {
               data.ownModals.push(this.model);
               docRef.set(data);
             }
