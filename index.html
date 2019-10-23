@@ -157,5 +157,34 @@
   modal = M.Modal.init(modalEle, { dismissible: false });
 </script>
 <script src="liff.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-firestore.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCaxBk624DKPVZC2iXZA0xVRzJVaSX3n10",
+    authDomain: "line-things-tsic.firebaseapp.com",
+    databaseURL: "https://line-things-tsic.firebaseio.com",
+    projectId: "line-things-tsic",
+    storageBucket: "line-things-tsic.appspot.com",
+    messagingSenderId: "884530343481",
+    appId: "1:884530343481:web:f6c0a3a0ad84e365aea7e8"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+  db.collection("users").add({
+    first: "Ada",
+    last: "Lovelace",
+    born: 1815
+  })
+    .then(function (docRef) {
+      console.log("Document written with ID: ", docRef.id);
+    })
+    .catch(function (error) {
+      console.error("Error adding document: ", error);
+    });
+</script>
 
 </html>
