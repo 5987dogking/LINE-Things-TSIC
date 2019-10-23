@@ -51,7 +51,7 @@
 <body>
   <div id="app" class="container">
     <h3 onclick="vConsoleShow()">空氣清淨智慧系統</h3>
-    <span v-if="model">型號:{{model}}</span>
+    <span v-if="model" @click="saveModel()">型號:{{model}}</span>
     <hr />
     <p>
       <img id="loading-animation" class="" src="loading.gif" height="14px" />
@@ -154,15 +154,30 @@
     },
     methods: {
       saveModel() {
-        db.collection("users").doc(this.profile.userId).set({
-          ... this.profile,
-          ownModals: [this.model],
-          wifiList: this.wifiList,
-          wifiConfig: this.wifiConfig,
-        }).then(function (docRef) {
-          console.log("Document written with ID: ", docRef.id);
+        var docRef = db.collection("users").doc(this.profile.userId);
+        docRef.get().then((doc) => {
+          if (doc.exists) {
+            let data = doc.data();
+            console.log("Document data:", data);
+            if (data.ownModals.indexof(this.model) !== -1) {
+              data.ownModals.push(this.model);
+              docRef.set(data);
+            }
+          } else {
+            console.log("No such document!");
+            docRef.set({
+              ... this.profile,
+              ownModals: [this.model],
+              wifiList: this.wifiList,
+              wifiConfig: this.wifiConfig,
+            }).then(function (docRef) {
+              console.log("Document written with ID: ", docRef.id);
+            }).catch(function (error) {
+              console.error("Error adding document: ", error);
+            });
+          }
         }).catch(function (error) {
-          console.error("Error adding document: ", error);
+          console.log("Error getting document:", error);
         });
       },
     }
