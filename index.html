@@ -1,0 +1,161 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.3.0/vconsole.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <link rel="stylesheet" type="text/css" href="liff.css" />
+</head>
+<script>
+  const apiUrl = 'https://us-central1-review-clean02.cloudfunctions.net/app';
+  function registerModel() {
+    const model = window.app.model;
+    const registerData = {
+      model: model,
+      userId: window.app.profile.userId,
+    };
+    axios.post(apiUrl + '/', registerData)
+      .then((response) => {
+        // handle success
+        console.log(response);
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      })
+  }
+  axios.get('https://us-central1-review-clean02.cloudfunctions.net/app')
+    .then((response) => {
+      // handle success
+      console.log(response);
+    })
+    .catch((error) => {
+      // handle error
+      console.log(error);
+    });
+  let vConsole_i = 0;
+  function vConsoleShow() {
+    vConsole_i++;
+    if (vConsole_i === 8) {
+      var vConsole = new VConsole();
+    }
+  }
+</script>
+
+<body>
+  <div id="app" class="container">
+    <h3 onclick="vConsoleShow()">空氣清淨智慧系統</h3>
+    <span v-if="model">型號:{{model}}</span>
+    <hr />
+    <p>
+      <img id="loading-animation" class="" src="loading.gif" height="14px" />
+      <span id="status" class="inactive">Device disconnected</span>
+    </p>
+    <p>
+      藍牙狀態：
+      <span v-if="bluetooth">已連線</span>
+      <span v-if="!bluetooth" class="red-text">未連線</span>
+    </p>
+    <hr />
+
+    <div id="controls" class="hidden"></div>
+    <a class="waves-effect waves-light indigo btn right" style="font-size: 14px;" id="refreshWIFIBtn">
+      &nbsp; 刷新WIFI <i class="material-icons right">cached</i>
+    </a>
+    <select v-model="wifiConfig.SSID" class="browser-default">
+      <option value="" disabled selected>請選擇WIFI</option>
+      <option v-for="wifi in wifiList" v-bind:value="wifi.SSID">
+        {{ wifi.SSID }}
+      </option>
+    </select>
+    <br>
+    <div class="input-field col s12" v-if="wifiConfig.SSID !== ''">
+      <input placeholder="輸入WIFI密碼" type="text" v-model="wifiConfig.password" class="validate">
+      <label for="first_name" class="active">{{wifiConfig.SSID}}</label>
+    </div>
+    <!-- <span>Selected: {{ wifiConfig  }}</span> -->
+    <button class="waves-effect waves-light btn" style="width: 100%;" id="btn-connect">
+      連線<i class="material-icons right">send</i>
+    </button>
+
+    <ul class="collection with-header" v-if="environment.heatIndex !== 0">
+      <li class="collection-header">
+        <h4>即時數據</h4>
+      </li>
+      <li class="collection-item">
+        <div>溫度：{{environment.temperature}}</div>
+      </li>
+      <li class="collection-item">
+        <div>濕度：{{environment.humidity}}</div>
+      </li>
+      <li class="collection-item" v-if="environment.heatIndex !== 0">
+        <div>體感：{{environment.heatIndex}}</div>
+      </li>
+      <li class="collection-item">
+        <div>PM2.5：{{environment.voMeasured}}</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>WIFI掃描中...</h4>
+      <br>
+      <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+  M.AutoInit();
+  const urlParams = new URLSearchParams(window.location.search);
+  const model = urlParams.get('model');
+  app = new Vue({
+    el: '#app',
+    data: {
+      wifiList: [
+      ],
+      wifiConfig: {
+        SSID: '',
+        password: '',
+      },
+      environment: {
+        humidity: 28,
+        temperature: 28,
+        heatIndex: 0,
+        voMeasured: 77,
+      },
+      wifiStatus: {
+        SSID: '',
+        isConnect: true,
+      },
+      bluetooth: true,
+      model: model,
+      profile: {},
+    }
+  });
+  modalEle = document.getElementById('modal1')
+  modal = M.Modal.init(modalEle, { dismissible: false });
+</script>
+<script src="liff.js"></script>
+
+</html>
