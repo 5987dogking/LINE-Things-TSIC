@@ -151,6 +151,20 @@
       bluetooth: true,
       model: model,
       profile: {},
+    },
+    methods: {
+      saveModel() {
+        db.collection("users").doc(this.profile.userId).set({
+          ... this.profile,
+          ownModals: [this.model],
+          wifiList: this.wifiList,
+          wifiConfig: this.wifiConfig,
+        }).then(function (docRef) {
+          console.log("Document written with ID: ", docRef.id);
+        }).catch(function (error) {
+          console.error("Error adding document: ", error);
+        });
+      },
     }
   });
   modalEle = document.getElementById('modal1')
@@ -174,17 +188,6 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   var db = firebase.firestore();
-  db.collection("users").add({
-    first: "Ada",
-    last: "Lovelace",
-    born: 1815
-  })
-    .then(function (docRef) {
-      console.log("Document written with ID: ", docRef.id);
-    })
-    .catch(function (error) {
-      console.error("Error adding document: ", error);
-    });
 </script>
 
 </html>
