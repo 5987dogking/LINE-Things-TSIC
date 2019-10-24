@@ -264,6 +264,14 @@ function liffGetButtonStateCharacteristic(characteristic) {
                                 refreshWIFI();
                             }, 500);
                             break;
+                        case 'setWifi':
+                            if (dataObj.status === 0) {
+                                alert('WIFI 連線成功');
+                                window.app.wifiStatus.isConnect = true;
+                            } else {
+                                alert('WIFI 連線失敗，請檢查密碼或重新嘗試。');
+                            }
+                            break;
                         default:
                             break;
                     }
