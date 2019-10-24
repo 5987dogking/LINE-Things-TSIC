@@ -51,7 +51,8 @@
                 <div class="collapsible-header"><i class="material-icons">filter_drama</i>{{model}}</div>
             </li>
         </ul>
-        <img src="assets/images/sensorImg.jpg" id="sensorImg" width="100%">
+        <img :src="sensorSrc" width="100%">
+
         <!-- Modal Structure -->
         <div id="modal1" class="modal">
             <div class="modal-content">
@@ -93,6 +94,7 @@
                 'ASR_456',
             ],
             sensorData: {},
+            sensorSrc: 'https://5987dogking.github.io/LINE-Things-TSIC/assets/images/sensorImg.jpg',
             targetModel: '',
         },
         methods: {
@@ -133,11 +135,14 @@
                 console.log('getModalData', targetModel);
                 axios.get(this.apiUrl + targetModel).then((response) => {
                     // handle success
-                    this.sensorData = response.data;
                     console.log('axios.get', targetModel, response);
-                    setTimeout(() => {
-                        this.getModalData(targetModel);
-                    }, 10000);
+                    console.log('axios.get', targetModel, response.data);
+                    this.sensorData = response.data;
+                    this.canvasPrint();
+
+                    // setTimeout(() => {
+                    //     this.getModalData(targetModel);
+                    // }, 10000);
                 }).catch((error) => {
                     // handle error
                     console.log(error);
@@ -155,7 +160,7 @@
                 // });
             },
             canvasPrint() {
-                var img = new Image();
+                const img = new Image();
                 img.onload = function () {
                     const canvas = document.getElementById('canvas');
                     console.log('this.width', this.width);
@@ -164,15 +169,18 @@
                     console.log('this.canvas', canvas);
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
-                    ctx.font = '40px Arial';
+                    ctx.fillStyle = "#fff";
+                    ctx.font = '50px Arial';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.fillText('666', 390, 393);
+                    console.log('sensorData', window.app.sensorData);
+                    ctx.fillText(window.app.sensorData.CO2, 420, 415);
                     ctx.stroke();
                     const dataURL = canvas.toDataURL('image/jpeg');
+                    window.app.sensorSrc = dataURL;
                     console.log('dataURL', dataURL);
                 }
-                img.src = './assets/images/sensorImg.jpg';
+                img.src = 'https://5987dogking.github.io/LINE-Things-TSIC/assets/images/sensorImg.jpg';
                 console.log('img', img);
             }
 
