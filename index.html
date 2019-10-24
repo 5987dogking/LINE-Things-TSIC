@@ -201,15 +201,15 @@
           if (doc.exists) {
             let data = doc.data();
             console.log("Document data:", data);
-            if (data.ownModals.indexOf(this.model) === -1) {
-              data.ownModals.push(this.model);
+            if (data.ownModels.indexOf(this.model) === -1) {
+              data.ownModels.push(this.model);
               docRef.set(data);
             }
           } else {
             console.log("No such document!");
             db.collection("users").doc(this.profile.userId).set({
               ... this.profile,
-              ownModals: [this.model],
+              ownModels: [this.model],
               wifiList: this.wifiList,
               wifiConfig: this.wifiConfig,
             }).then(function (docRef) {

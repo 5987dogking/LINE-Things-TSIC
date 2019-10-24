@@ -58,7 +58,7 @@ function uiToggleDeviceConnected(connected) {
         // Show controls
         elControls.classList.remove("hidden");
         setTimeout(() => {
-            getModal();
+            getModel();
         }, 1000);
     } else {
         // Show loading animation
