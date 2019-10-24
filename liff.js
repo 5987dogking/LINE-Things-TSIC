@@ -57,7 +57,9 @@ function uiToggleDeviceConnected(connected) {
         elStatus.innerText = "Device connected";
         // Show controls
         elControls.classList.remove("hidden");
-        getModal();
+        setTimeout(() => {
+            getModal();
+        }, 2000);
     } else {
         // Show loading animation
         uiToggleLoadingAnimation(true);
