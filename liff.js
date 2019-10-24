@@ -130,8 +130,7 @@ function initializeApp() {
             statusMessage: "􀠁􀅶Quotation marks left􏿿 I'm a Hello World Engineer􀠁􀅷Quotation marks right􏿿",
         };
     }
-    const liffId = window.app.liffId;
-    liff.init(({ liffId: liffId }) => initializeLiff(), error => uiStatusError(makeErrorMsg(error), false));
+    liff.init(({ liffId: window.app.liffId }), initializeLiff(), error => uiStatusError(makeErrorMsg(error), false));
 }
 
 function initializeLiff() {
