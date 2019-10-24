@@ -268,7 +268,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                             }, 500);
                             break;
                         case 'setWifi':
-                            if (dataObj.status == '0') {
+                            if (dataObj.status == 3) {
                                 window.app.wifiStatus.isConnect = true;
                                 alert('WIFI 連線成功');
                             } else {
@@ -314,7 +314,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                 }
             }
             uint8arrayStringHistory = uint8arrayString;
-        });//2243
+        });
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });

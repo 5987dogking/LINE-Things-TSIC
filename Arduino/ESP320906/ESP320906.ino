@@ -320,6 +320,6 @@ void actionSetWifi(String SSID_str, String password_str) {
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
   }
-  String statusData = "{\"status\":\"" + String(status) + "\",\"SSID\":\"" + SSID_str + "\"}";
+  String statusData = "{\"status\":\"" + String(WiFi.status()) + "\",\"SSID\":\"" + SSID_str + "\"}";
   sendData(statusData);
 }
