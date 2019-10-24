@@ -59,7 +59,7 @@ function uiToggleDeviceConnected(connected) {
         elControls.classList.remove("hidden");
         setTimeout(() => {
             getModal();
-        }, 2000);
+        }, 1000);
     } else {
         // Show loading animation
         uiToggleLoadingAnimation(true);
@@ -315,16 +315,8 @@ function refreshWIFI() {
 
 function getModal() {
     console.log('getModal Function Go');
-    window.modal.open();
     obj = { mode: 'getModal' };
     BTLsend(obj);
-    if (location.hostname === '') {
-        setTimeout(() => {
-            window.modal.close();
-        }, 2000);
-        return;
-    }
-
 }
 
 let loadingTextZh = {
