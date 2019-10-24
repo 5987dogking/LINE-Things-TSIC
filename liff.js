@@ -242,6 +242,7 @@ function liffGetPSDIService(service) {
 
 var dataString = '';
 var dataObj = {};
+var uint8arrayStringHistory = '';
 var reTryCount = 0;
 function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
@@ -308,7 +309,10 @@ function liffGetButtonStateCharacteristic(characteristic) {
                     }
                 }
             } else {
-                dataString += uint8arrayString;
+                if (uint8arrayStringHistory !== uint8arrayString) {
+                    dataString += uint8arrayString;
+                }
+                uint8arrayStringHistory = uint8arrayString;
             }
         });
     }).catch(error => {
