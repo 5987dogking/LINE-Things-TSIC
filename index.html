@@ -51,7 +51,7 @@
 <body>
   <div id="app" class="container">
     <h3 onclick="vConsoleShow()">空氣清淨智慧系統</h3>
-    <span v-if="model" @click="saveModel()">型號:{{model}}</span>
+    <span v-if="model">型號:{{model}}</span>
     <hr />
     <p>
       <img id="loading-animation" class="" src="loading.gif" height="14px" />
@@ -84,7 +84,7 @@
       連線<i class="material-icons right">send</i>
     </button>
 
-    <ul class="collection with-header" v-if="environment.heatIndex !== 0">
+    <!-- <ul class="collection with-header">
       <li class="collection-header">
         <h4>即時數據</h4>
       </li>
@@ -98,31 +98,70 @@
         <div>體感：{{environment.heatIndex}}</div>
       </li>
       <li class="collection-item">
-        <div>PM2.5：{{environment.voMeasured}}</div>
+        <div><img src="https://image.flaticon.com/icons/svg/2184/2184803.svg" alt=""> PM2.5：{{environment.voMeasured}}
+        </div>
       </li>
-    </ul>
-  </div>
+      <li class="collection-item">
+        <div>二氧化碳：{{environment.co2}}</div>
+      </li>
+    </ul> -->
 
-  <!-- Modal Structure -->
-  <div id="modal1" class="modal">
-    <div class="modal-content">
-      <h4>WIFI掃描中...</h4>
-      <br>
-      <div class="preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue-only">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div>
-          <div class="gap-patch">
-            <div class="circle"></div>
-          </div>
-          <div class="circle-clipper right">
-            <div class="circle"></div>
+    <div class="row">
+      <h4>即時數據</h4>
+
+      <div class="col s6 ">
+        <div class="z-depth-3">
+          <img src="https://image.flaticon.com/icons/svg/214/214352.svg" class="dataIcon responsive-img">
+          <p>溫度：{{environment.temperature}} </p>
+        </div>
+      </div>
+
+      <div class="col s6 ">
+        <div class="z-depth-3">
+          <img src="https://image.flaticon.com/icons/svg/1779/1779883.svg" class="dataIcon responsive-img">
+          <p>濕度：{{environment.humidity}} </p>
+        </div>
+      </div>
+
+      <div class="col s6 ">
+        <div class="z-depth-3">
+          <img src="https://image.flaticon.com/icons/svg/1890/1890036.svg" class="dataIcon responsive-img">
+          <p>CO2：{{environment.co2}} </p>
+        </div>
+      </div>
+
+      <div class="col s6 ">
+        <div class="z-depth-3">
+          <img src="https://image.flaticon.com/icons/svg/2184/2184803.svg" class="dataIcon responsive-img">
+          <p>PM2.5：{{environment.voMeasured}} </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <h4>{{loadingText}}</h4>
+        <br>
+        <div class="preloader-wrapper big active">
+          <div class="spinner-layer spinner-blue-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div>
+            <div class="gap-patch">
+              <div class="circle"></div>
+            </div>
+            <div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
+
+
 
 </body>
 <script>
@@ -143,6 +182,7 @@
         temperature: 28,
         heatIndex: 0,
         voMeasured: 77,
+        co2: 66,
       },
       wifiStatus: {
         SSID: '',
@@ -150,36 +190,9 @@
       },
       bluetooth: true,
       model: model,
+      loadingText: 'WIFI掃描中...',
+      dataMode: '',
       profile: {},
-    },
-    methods: {
-      saveModel() {
-        var docRef = db.collection("users").doc(this.profile.userId);
-        docRef.get().then((doc) => {
-          if (doc.exists) {
-            let data = doc.data();
-            console.log("Document data:", data);
-            if (data.ownModals.indexOf(this.model) === -1) {
-              data.ownModals.push(this.model);
-              docRef.set(data);
-            }
-          } else {
-            console.log("No such document!");
-            db.collection("users").doc(this.profile.userId).set({
-              ... this.profile,
-              ownModals: [this.model],
-              wifiList: this.wifiList,
-              wifiConfig: this.wifiConfig,
-            }).then(function (docRef) {
-              console.log("Document written with ID: ", docRef.id);
-            }).catch(function (error) {
-              console.error("Error adding document: ", error);
-            });
-          }
-        }).catch(function (error) {
-          console.log("Error getting document:", error);
-        });
-      },
     }
   });
   modalEle = document.getElementById('modal1')

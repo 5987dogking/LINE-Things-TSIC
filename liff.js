@@ -41,6 +41,7 @@ function handlerToggleLed() {
 // ------------ //
 
 function uiToggleDeviceConnected(connected) {
+
     const elStatus = document.getElementById("status");
     const elControls = document.getElementById("controls");
     elStatus.classList.remove("error");
@@ -247,13 +248,23 @@ function liffGetButtonStateCharacteristic(characteristic) {
             if (uint8arrayString === 'BTLend') {
                 try {
                     dataObj = JSON.parse(dataString);
-                    window.app.wifiList = dataObj.data;
-                    dataString = '';
+                    switch (window.app.dataMode) {
+                        case 'refreshWifi':
+                            window.app.wifiList = dataObj.data;
+                            break;
+                        case 'getModal':
+                            window.app.model = dataObj.modal;
+                            break;
+                        default:
+                            break;
+                    }
                     window.modal.close();
                 } catch (error) {
                     console.log('JSON.parse(dataString) GG', error);
+                    alert('發生錯誤請重新操作');
                     window.modal.close();
                 }
+                dataString = '';
             } else {
                 dataString += uint8arrayString;
             }
@@ -283,7 +294,6 @@ function setWIFI() {
     BTLsend(obj);
 }
 
-
 function refreshWIFI() {
     console.log('refreshWIFI Function Go');
     window.modal.open();
@@ -292,11 +302,33 @@ function refreshWIFI() {
         setTimeout(() => {
             window.modal.close();
         }, 2000);
+        return;
     }
     BTLsend(obj);
 }
 
+function getModal() {
+    console.log('getModal Function Go');
+    window.modal.open();
+    obj = { mode: 'getModal' };
+    if (location.hostname === '') {
+        setTimeout(() => {
+            window.modal.close();
+        }, 2000);
+        return;
+    }
+    BTLsend(obj);
+}
+
+let loadingTextZh = {
+    refreshWifi: 'WIFI掃描中..',
+    getModal: '取得型號中...',
+    setWifi: 'WIFI設定中...',
+};
+
 function BTLsend(obj) {
+    window.app.dataMode = obj.mode;
+    window.app.loadingText = loadingTextZh[obj.mode];
     const enc = new TextEncoder(); // always utf-8
     const postText = JSON.stringify(obj);
     const postTextUtf8 = enc.encode(postText);
