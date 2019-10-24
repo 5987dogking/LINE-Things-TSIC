@@ -73,9 +73,11 @@
                 </div>
             </div>
         </div>
+
+        <canvas id="canvas" style="max-width: 100%;display: none;"></canvas>
     </div>
 
-    <canvas id="canvas"></canvas>
+
 
 
 </body>
@@ -170,11 +172,15 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
                     ctx.fillStyle = "#fff";
-                    ctx.font = '50px Arial';
+                    ctx.font = '170px Arial';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     console.log('sensorData', window.app.sensorData);
-                    ctx.fillText(window.app.sensorData.CO2, 420, 415);
+                    ctx.fillText(window.app.sensorData.CO2, 270, 380);
+                    ctx.fillText(window.app.sensorData.PM, 870, 380);
+                    ctx.fillText(window.app.sensorData.temperature, 270, 820);
+                    ctx.fillText(window.app.sensorData.humidity, 900, 820);
+                    //temperature humidity
                     ctx.stroke();
                     const dataURL = canvas.toDataURL('image/jpeg');
                     window.app.sensorSrc = dataURL;
