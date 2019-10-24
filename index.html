@@ -14,6 +14,7 @@
   <link rel="stylesheet" type="text/css" href="liff.css" />
 </head>
 <script>
+  var vConsole = new VConsole();
   const apiUrl = 'https://us-central1-review-clean02.cloudfunctions.net/app';
   function registerModel() {
     const model = window.app.model;
@@ -179,6 +180,7 @@
   app = new Vue({
     el: '#app',
     data: {
+      liffId: '1653366904-1e6bqowx',
       vConsole_i: 0,
       wifiList: [
       ],

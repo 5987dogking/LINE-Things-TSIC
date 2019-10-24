@@ -3,7 +3,7 @@ const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // psdiService
 const PSDI_CHARACTERISTIC_UUID = '26e2b12b-85f0-4f3f-9fdd-91d114270e6e';// psdiCharacteristicUuid
 const LED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
 const BTN_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
-const liffId = '1653366904-1e6bqowx';
+
 let ledState = false; // true: LED on, false: LED off
 let clickCount = 0;
 
@@ -130,6 +130,7 @@ function initializeApp() {
             statusMessage: "􀠁􀅶Quotation marks left􏿿 I'm a Hello World Engineer􀠁􀅷Quotation marks right􏿿",
         };
     }
+    const liffId = window.app.liffId;
     liff.init(({ liffId: liffId }) => initializeLiff(), error => uiStatusError(makeErrorMsg(error), false));
 }
 
