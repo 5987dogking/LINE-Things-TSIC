@@ -272,6 +272,8 @@ function liffGetButtonStateCharacteristic(characteristic) {
                     reTryCount = 0;
                 } catch (error) {
                     console.log('JSON.parse(dataString) GG', error);
+                    console.log('dataString =>', dataString);
+                    dataString = '';
                     window.modal.close();
                     reTryCount++;
                     if (reTryCount !== 3) {
