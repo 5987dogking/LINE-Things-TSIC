@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.3.0/vconsole.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -15,39 +14,6 @@
 </head>
 <script>
   var vConsole = new VConsole();
-  const apiUrl = 'https://us-central1-review-clean02.cloudfunctions.net/app';
-  function registerModel() {
-    const model = window.app.model;
-    const registerData = {
-      model: model,
-      userId: window.app.profile.userId,
-    };
-    axios.post(apiUrl + '/', registerData)
-      .then((response) => {
-        // handle success
-        console.log(response);
-      })
-      .catch((error) => {
-        // handle error
-        console.log(error);
-      })
-  }
-  axios.get('https://us-central1-review-clean02.cloudfunctions.net/app')
-    .then((response) => {
-      // handle success
-      console.log(response);
-    })
-    .catch((error) => {
-      // handle error
-      console.log(error);
-    });
-  let vConsole_i = 0;
-  function vConsoleShow() {
-    vConsole_i++;
-    if (vConsole_i === 8) {
-      var vConsole = new VConsole();
-    }
-  }
 </script>
 
 <body>
@@ -261,5 +227,6 @@
   firebase.initializeApp(firebaseConfig);
   var db = firebase.firestore();
 </script>
+<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 
 </html>
