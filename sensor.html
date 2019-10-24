@@ -14,7 +14,6 @@
     <link rel="stylesheet" type="text/css" href="liff.css" />
 </head>
 <script>
-    var vConsole = new VConsole();
     const apiUrl = 'https://focusdc.com.tw/air/api/log/get_sensor/{deviceid}';
     function registerModel() {
         const model = window.app.model;
@@ -68,7 +67,7 @@
             <h4>{{targetModel.substr(0,2)=='AS'?'空氣品質感測器':''}}</h4>
             <span class="grey-text" style="font-size: 0.75em;">{{targetModel}}</span>
             <img :src="sensorSrc" width="100%">
-            <canvas id="canvas" style="max-width: 100%;display: none;"></canvas>
+            <canvas id="canvas" style="display: none;"></canvas>
             <br>
             <br>
             <a class="waves-effect waves-light btn indigo btn-block" @click="page=1">回上一頁</a>
