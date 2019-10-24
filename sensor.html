@@ -51,7 +51,7 @@
                 <div class="collapsible-header"><i class="material-icons">filter_drama</i>{{model}}</div>
             </li>
         </ul>
-
+        <img src="assets/images/sensorImg.jpg" id="sensorImg" width="100%">
         <!-- Modal Structure -->
         <div id="modal1" class="modal">
             <div class="modal-content">
@@ -74,6 +74,7 @@
         </div>
     </div>
 
+    <canvas id="canvas"></canvas>
 
 
 </body>
@@ -91,6 +92,7 @@
                 'a001',
                 'ASR_456',
             ],
+            sensorData: {},
             targetModel: '',
         },
         methods: {
@@ -129,28 +131,51 @@
             },
             getModalData(targetModel) {
                 console.log('getModalData', targetModel);
-                // axios.get(this.apiUrl + targetModel).then((response) => {
-                //     // handle success
-                //     console.log('axios.get', targetModel, response);
-                //     setTimeout(() => {
-                //         this.getModalData(targetModel);
-                //     }, 10000);
-                // }).catch((error) => {
-                //     // handle error
-                //     console.log(error);
-                // })
-                $.ajax({
-                    url: this.apiUrl + targetModel,
-                    type: 'get',
-                    dataType: "jsonp",//指定以jsonp方式執行
-                    jsonp: "mycallback",//"mycallback"會以GET的變數名稱傳送，沒指定時，jQuery使用"callback"當變數名稱
-                    jsonpCallback: 'aaaa',//"mycallback"變數的值，沒指定時，jQuery隨機產生
-                    async: false,
-                    success: function (result) {
-                        console.log('result', result);
-                    }
-                });
+                axios.get(this.apiUrl + targetModel).then((response) => {
+                    // handle success
+                    this.sensorData = response.data;
+                    console.log('axios.get', targetModel, response);
+                    setTimeout(() => {
+                        this.getModalData(targetModel);
+                    }, 10000);
+                }).catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+                // $.ajax({
+                //     url: this.apiUrl + targetModel,
+                //     type: 'get',
+                //     dataType: "jsonp",
+                //     jsonp: "mycallback",
+                //     async: false,
+                //     contentType: 'text/html;charset=UTF-8',
+                //     success: function (result) {
+                //         console.log('result', result);
+                //     }
+                // });
+            },
+            canvasPrint() {
+                var img = new Image();
+                img.onload = function () {
+                    const canvas = document.getElementById('canvas');
+                    console.log('this.width', this.width);
+                    canvas.width = this.width;
+                    canvas.height = this.height;
+                    console.log('this.canvas', canvas);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    ctx.font = '40px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('666', 390, 393);
+                    ctx.stroke();
+                    const dataURL = canvas.toDataURL('image/jpeg');
+                    console.log('dataURL', dataURL);
+                }
+                img.src = './assets/images/sensorImg.jpg';
+                console.log('img', img);
             }
+
         }, beforeMount() {
 
         }
