@@ -236,7 +236,14 @@
                 statusMessage: "􀠁􀅶Quotation marks left􏿿 I'm a Hello World Engineer􀠁􀅷Quotation marks right􏿿",
             };
         }
-        liff.init({ liffId: window.app.liffId }).then(() => { window.app.getUserData(); }).catch((err) => {
+        liff.init({ liffId: window.app.liffId }).then(() => {
+            liff.getProfile().then(profile => {
+                window.app.profile = profile;
+                window.app.getUserData();
+            }).catch((err) => {
+                console.log('error', err);
+            });
+        }).catch((err) => {
             console.log(error);
         });
     };
