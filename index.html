@@ -10,6 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="liff.js"></script>
   <link rel="stylesheet" type="text/css" href="liff.css" />
 </head>
 <script>
@@ -51,7 +52,7 @@
 <body>
   <div id="app" class="container">
     <h3 onclick="vConsoleShow()">空氣清淨智慧系統</h3>
-    <span v-if="model">型號:{{model}}</span>
+    <span v-if="model" @click="saveModel()">型號:{{model}}</span>
     <hr />
     <p>
       <img id="loading-animation" class="" src="loading.gif" height="14px" />
@@ -106,7 +107,7 @@
       </li>
     </ul> -->
 
-    <div class="row">
+    <div class="row hidden">
       <h4>即時數據</h4>
 
       <div class="col s6 ">
@@ -165,9 +166,8 @@
 
 </body>
 <script>
+
   M.AutoInit();
-  const urlParams = new URLSearchParams(window.location.search);
-  const model = urlParams.get('model');
   app = new Vue({
     el: '#app',
     data: {
@@ -189,19 +189,46 @@
         isConnect: true,
       },
       bluetooth: true,
-      model: model,
+      model: '',
       loadingText: 'WIFI掃描中...',
       dataMode: '',
       profile: {},
+    },
+    methods: {
+      saveModel() {
+        var docRef = db.collection("users").doc(this.profile.userId);
+        docRef.get().then((doc) => {
+          if (doc.exists) {
+            let data = doc.data();
+            console.log("Document data:", data);
+            if (data.ownModals.indexOf(this.model) === -1) {
+              data.ownModals.push(this.model);
+              docRef.set(data);
+            }
+          } else {
+            console.log("No such document!");
+            db.collection("users").doc(this.profile.userId).set({
+              ... this.profile,
+              ownModals: [this.model],
+              wifiList: this.wifiList,
+              wifiConfig: this.wifiConfig,
+            }).then(function (docRef) {
+              console.log("Document written with ID: ", docRef.id);
+            }).catch(function (error) {
+              console.error("Error adding document: ", error);
+            });
+          }
+        }).catch(function (error) {
+          console.log("Error getting document:", error);
+        });
+      },
+    }, beforeMount() {
+
     }
   });
-  modalEle = document.getElementById('modal1')
-  modal = M.Modal.init(modalEle, { dismissible: false });
 </script>
-<script src="liff.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-firestore.js"></script>
-
 <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {

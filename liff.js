@@ -14,6 +14,8 @@ let clickCount = 0;
 
 window.onload = () => {
     initializeApp();
+    modalEle = document.getElementById('modal1')
+    modal = M.Modal.init(modalEle, { dismissible: false });
     const btn_connect = document.getElementById("btn-connect");
     btn_connect.addEventListener("click", setWIFI);
     document.getElementById("refreshWIFIBtn").addEventListener("click", refreshWIFI);
@@ -41,7 +43,6 @@ function handlerToggleLed() {
 // ------------ //
 
 function uiToggleDeviceConnected(connected) {
-
     const elStatus = document.getElementById("status");
     const elControls = document.getElementById("controls");
     elStatus.classList.remove("error");
@@ -56,6 +57,7 @@ function uiToggleDeviceConnected(connected) {
         elStatus.innerText = "Device connected";
         // Show controls
         elControls.classList.remove("hidden");
+        getModal();
     } else {
         // Show loading animation
         uiToggleLoadingAnimation(true);
@@ -66,6 +68,7 @@ function uiToggleDeviceConnected(connected) {
         // Hide controls
         elControls.classList.add("hidden");
     }
+
 }
 
 function uiToggleLoadingAnimation(isLoading) {
@@ -209,12 +212,10 @@ function liffGetUserService(service) {
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
-
     // Toggle LED
     service.getCharacteristic(LED_CHARACTERISTIC_UUID).then(characteristic => {
         window.ledCharacteristic = characteristic;
         // Switch off by default
-
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -268,7 +269,6 @@ function liffGetButtonStateCharacteristic(characteristic) {
             } else {
                 dataString += uint8arrayString;
             }
-
         });
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
@@ -276,7 +276,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
 }
 
 var demoData = { "data": [{ "SSID": "Test WIFI" }] };
-reflash();
+// reflash();
 function reflash() {
     demoData.data.forEach(element => {
         // SSIDel.add(new Option(element.SSID, element.SSID));
@@ -311,13 +311,14 @@ function getModal() {
     console.log('getModal Function Go');
     window.modal.open();
     obj = { mode: 'getModal' };
+    BTLsend(obj);
     if (location.hostname === '') {
         setTimeout(() => {
             window.modal.close();
         }, 2000);
         return;
     }
-    BTLsend(obj);
+
 }
 
 let loadingTextZh = {
@@ -332,7 +333,12 @@ function BTLsend(obj) {
     const enc = new TextEncoder(); // always utf-8
     const postText = JSON.stringify(obj);
     const postTextUtf8 = enc.encode(postText);
-    window.ledCharacteristic.writeValue(postTextUtf8).catch(error => {
-        uiStatusError(makeErrorMsg(error), false);
-    });
+    try {
+        window.ledCharacteristic.writeValue(postTextUtf8).catch(error => {
+            uiStatusError(makeErrorMsg(error), false);
+        });
+    } catch (error) {
+        console.log('送出失敗', error);
+        alert('送出失敗');
+    }
 }
