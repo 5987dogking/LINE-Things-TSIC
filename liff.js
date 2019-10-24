@@ -253,7 +253,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
             const uint8array = new Uint8Array(e.target.value.buffer);
             const uint8arrayString = new TextDecoder("utf-8").decode(uint8array);
             console.log('BTL Get =>', uint8arrayString);
-            if (uint8arrayString === 'BTLend') {
+            if (uint8arrayString === 'BTLend' && uint8arrayStringHistory !== 'BTLend') {
                 try {
                     dataObj = JSON.parse(dataString);
                     switch (window.app.dataMode) {
