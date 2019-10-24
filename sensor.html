@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="liff.js"></script>
     <link rel="stylesheet" type="text/css" href="liff.css" />
 </head>
 <script>
@@ -227,7 +226,19 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
-    window.app.getModalData();
+    window.onload = () => {
+        if (location.hostname === '') {
+            window.app.profile = {
+                userId: "Ud1d085be5a554acca6a6bb3f5a496bfc",
+                displayName: "劉振維",
+                pictureUrl: "https://profile.line-scdn.net/0htukRqtJpK1pWKwRa2BxUDWpuJTchBS0SLkszbHcpIjh-SGoJOEptb3p5fG4sEm5fbUllOXsuJmx6",
+                statusMessage: "􀠁􀅶Quotation marks left􏿿 I'm a Hello World Engineer􀠁􀅷Quotation marks right􏿿",
+            };
+        }
+        liff.init({ liffId: window.app.liffId }).then(() => { window.app.getUserData(); }).catch((err) => {
+            uiStatusError(makeErrorMsg(error), false)
+        });
+    };
 </script>
 
 </html>
