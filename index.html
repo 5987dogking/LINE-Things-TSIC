@@ -63,9 +63,12 @@
       <span v-if="bluetooth">已連線</span>
       <span v-if="!bluetooth" class="red-text">未連線</span>
     </p>
-    <p v-if="app.wifiConfig.isConnect === true">
-      WIFI狀態：{{app.wifiConfig.SSID}}
+    <p v-if="wifiConfig.isConnect === true">
+      WIFI狀態：{{wifiConfig.SSID}}
       <span>已連線</span>
+    </p>
+    <p v-if="wifiConfig.isConnect === true">
+      請切換模式
     </p>
     <hr />
 
