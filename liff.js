@@ -302,7 +302,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                                 default:
                                     break;
                             }
-                        }, 300);
+                        }, 750);
                     } else {
                         reTryCount = 0;
                         alert('藍芽接收發生錯誤，請重新嘗試。');
@@ -312,9 +312,9 @@ function liffGetButtonStateCharacteristic(characteristic) {
                 if (uint8arrayStringHistory !== uint8arrayString) {
                     dataString += uint8arrayString;
                 }
-                uint8arrayStringHistory = uint8arrayString;
             }
-        });
+            uint8arrayStringHistory = uint8arrayString;
+        });//2243
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
