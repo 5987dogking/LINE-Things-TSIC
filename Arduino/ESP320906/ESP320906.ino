@@ -297,7 +297,7 @@ void actionSetWifi(String SSID_str, String password_str) {
   //  Serial.println(json);
   //  String SSID_str = json["SSID"];
   //  String password_str = json["password"];
-  char* SSID = (const char*)SSID_str.c_str();
+  const char* SSID = (const char*)SSID_str.c_str();
   char* password;
   int connectCount = 0;
   int status = WL_IDLE_STATUS;

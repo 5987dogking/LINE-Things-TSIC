@@ -1,0 +1,164 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.3.0/vconsole.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="liff.js"></script>
+    <link rel="stylesheet" type="text/css" href="liff.css" />
+</head>
+<script>
+    const apiUrl = 'https://focusdc.com.tw/air/api/log/get_sensor/{deviceid}';
+    function registerModel() {
+        const model = window.app.model;
+        const registerData = {
+            model: model,
+            userId: window.app.profile.userId,
+        };
+        axios.post(apiUrl + '/', registerData)
+            .then((response) => {
+                // handle success
+                console.log(response);
+            })
+            .catch((error) => {
+                // handle error
+                console.log(error);
+            })
+    }
+
+    let vConsole_i = 0;
+    function vConsoleShow() {
+        vConsole_i++;
+        if (vConsole_i === 8) {
+            var vConsole = new VConsole();
+        }
+    }
+</script>
+
+<body>
+    <div id="app" class="container">
+        <h4 @click="vConsoleShow()">您的設備列表</h4>
+        <span class="grey-text" style="font-size: 0.75em;">({{profile.userId}})</span>
+        <ul class="collapsible">
+            <li v-for="(model, index) in ownModels" @click="getModalData(model)">
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>{{model}}</div>
+            </li>
+        </ul>
+
+        <!-- Modal Structure -->
+        <div id="modal1" class="modal">
+            <div class="modal-content">
+                <h4>{{loadingText}}</h4>
+                <br>
+                <div class="preloader-wrapper big active">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+<script>
+    M.AutoInit();
+    app = new Vue({
+        el: '#app',
+        data: {
+            vConsole_i: 0,
+            profile: {},
+            apiUrl: 'https://focusdc.com.tw/air/api/log/get_sensor/',
+            ownModels: [
+                'Mark4563',
+                'a001',
+                'ASR_456',
+            ],
+            targetModel: '',
+        },
+        methods: {
+            vConsoleShow() {
+                vConsole_i++;
+                if (vConsole_i === 4) {
+                    var vConsole = new VConsole();
+                }
+            },
+            saveModel() {
+                var docRef = db.collection("users").doc(this.profile.userId);
+                docRef.get().then((doc) => {
+                    if (doc.exists) {
+                        let data = doc.data();
+                        console.log("Document data:", data);
+                        if (data.ownModels.indexOf(this.model) === -1) {
+                            data.ownModels.push(this.model);
+                            docRef.set(data);
+                        }
+                    } else {
+                        console.log("No such document!");
+                        db.collection("users").doc(this.profile.userId).set({
+                            ... this.profile,
+                            ownModels: [this.model],
+                            wifiList: this.wifiList,
+                            wifiConfig: this.wifiConfig,
+                        }).then(function (docRef) {
+                            console.log("Document written with ID: ", docRef.id);
+                        }).catch(function (error) {
+                            console.error("Error adding document: ", error);
+                        });
+                    }
+                }).catch(function (error) {
+                    console.log("Error getting document:", error);
+                });
+            },
+            getModalData(targetModel) {
+                console.log('getModalData', targetModel);
+                axios.get(this.apiUrl + targetModel).then((response) => {
+                    // handle success
+                    console.log('axios.get', targetModel, response);
+                    setTimeout(() => {
+                        this.getModalData(targetModel);
+                    }, 10000);
+                }).catch((error) => {
+                    // handle error
+                    console.log(error);
+                })
+            }
+        }, beforeMount() {
+
+        }
+    });
+</script>
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-firestore.js"></script>
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyCaxBk624DKPVZC2iXZA0xVRzJVaSX3n10",
+        authDomain: "line-things-tsic.firebaseapp.com",
+        databaseURL: "https://line-things-tsic.firebaseio.com",
+        projectId: "line-things-tsic",
+        storageBucket: "line-things-tsic.appspot.com",
+        messagingSenderId: "884530343481",
+        appId: "1:884530343481:web:f6c0a3a0ad84e365aea7e8"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
+</script>
+
+</html>
