@@ -258,7 +258,9 @@ function liffGetButtonStateCharacteristic(characteristic) {
                         case 'getModal':
                             window.app.model = dataObj.model;
                             window.app.saveModel();
-                            refreshWIFI();
+                            setTimeout(() => {
+                                refreshWIFI();
+                            }, 500);
                             break;
                         default:
                             break;
