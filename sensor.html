@@ -42,16 +42,37 @@
     }
 </script>
 
+<style>
+    .collapsible-header {
+        justify-content: space-between;
+    }
+</style>
+
 <body>
     <div id="app" class="container">
-        <h4 @click="vConsoleShow()">您的設備列表</h4>
-        <span class="grey-text" style="font-size: 0.75em;">({{profile.userId}})</span>
-        <ul class="collapsible">
-            <li v-for="(model, index) in ownModels" @click="getModalData(model)">
-                <div class="collapsible-header"><i class="material-icons">filter_drama</i>{{model}}</div>
-            </li>
-        </ul>
-        <img :src="sensorSrc" width="100%">
+        <div v-if="page == 1">
+            <h4 @click="vConsoleShow()">您的設備列表</h4>
+            <span class="grey-text" style="font-size: 0.75em;">({{profile.userId}})</span>
+            <ul class="collapsible">
+                <li v-for="(model, index) in ownModels" @click="getModalData(model);page=2;">
+                    <div class="collapsible-header"><i class="material-icons">filter_drama</i>
+                        {{model.substr(0,2)=='AS'?'空氣品質感測器':''}}
+                        <span>{{model}}</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+
+        <div v-if="page == 2">
+            <h4>{{targetModel.substr(0,2)=='AS'?'空氣品質感測器':''}}</h4>
+            <span class="grey-text" style="font-size: 0.75em;">{{targetModel}}</span>
+            <img :src="sensorSrc" width="100%">
+            <canvas id="canvas" style="max-width: 100%;display: none;"></canvas>
+            <br>
+            <br>
+            <a class="waves-effect waves-light btn indigo btn-block" @click="page=1">回上一頁</a>
+        </div>
 
         <!-- Modal Structure -->
         <div id="modal1" class="modal">
@@ -73,12 +94,7 @@
                 </div>
             </div>
         </div>
-
-        <canvas id="canvas" style="max-width: 100%;display: none;"></canvas>
     </div>
-
-
-
 
 </body>
 <script>
@@ -87,13 +103,12 @@
         el: '#app',
         data: {
             liffId: '1653366904-r7kj1Zm3',
+            page: '1',
             vConsole_i: 0,
             profile: {},
             apiUrl: 'https://focusdc.com.tw/air/api/log/get_sensor/',
             ownModels: [
-                'Mark4563',
-                'a001',
-                'ASR_456',
+
             ],
             sensorData: {},
             sensorSrc: 'https://5987dogking.github.io/LINE-Things-TSIC/assets/images/sensorImg.jpg',
@@ -134,40 +149,41 @@
                 });
             },
             getModalData(targetModel) {
-                console.log('getModalData', targetModel);
+                this.targetModel = targetModel;
                 axios.get(this.apiUrl + targetModel).then((response) => {
                     // handle success
-                    console.log('axios.get', targetModel, response);
-                    console.log('axios.get', targetModel, response.data);
                     this.sensorData = response.data;
                     this.canvasPrint();
-
-                    // setTimeout(() => {
-                    //     this.getModalData(targetModel);
-                    // }, 10000);
+                    setTimeout(() => {
+                        this.getModalData(targetModel);
+                    }, 10000);
                 }).catch((error) => {
                     // handle error
                     console.log(error);
                 })
-                // $.ajax({
-                //     url: this.apiUrl + targetModel,
-                //     type: 'get',
-                //     dataType: "jsonp",
-                //     jsonp: "mycallback",
-                //     async: false,
-                //     contentType: 'text/html;charset=UTF-8',
-                //     success: function (result) {
-                //         console.log('result', result);
-                //     }
-                // });
+            },
+            getUserData() {
+                var docRef = db.collection("users").doc(this.profile.userId);
+                docRef.get().then((doc) => {
+                    if (doc.exists) {
+                        let data = doc.data();
+                        console.log("Document data:", data);
+                        this.ownModels = data.ownModels;
+                    } else {
+                        console.log("No such document!");
+
+                    }
+                }).catch(function (error) {
+                    console.log("Error getting document:", error);
+                });
             },
             canvasPrint() {
                 const img = new Image();
                 img.onload = function () {
                     const canvas = document.getElementById('canvas');
                     console.log('this.width', this.width);
-                    canvas.width = this.width;
-                    canvas.height = this.height;
+                    canvas.width = this.width / 2;
+                    canvas.height = this.height / 2;
                     console.log('this.canvas', canvas);
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
@@ -211,6 +227,7 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
+    window.app.getModalData();
 </script>
 
 </html>
