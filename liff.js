@@ -1,8 +1,8 @@
-const USER_SERVICE_UUID = '9cfc60ec-4b8d-48aa-b089-4a56ca7ccab3'; // serviceUuid
-const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // psdiServiceUuid
-const PSDI_CHARACTERISTIC_UUID = '26e2b12b-85f0-4f3f-9fdd-91d114270e6e';// psdiCharacteristicUuid
+const USER_SERVICE_UUID = 'e4407d2a-f0ef-46cf-9056-c49ee23ba32d'; // LED, Button
+const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // Device ID
 const LED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
 const BTN_CHARACTERISTIC_UUID = '62FBD229-6EDD-4D1A-B554-5C4E1BB29169';
+const PSDI_CHARACTERISTIC_UUID = '26e2b12b-85f0-4f3f-9fdd-91d114270e6e';
 
 let ledState = false; // true: LED on, false: LED off
 let clickCount = 0;
@@ -70,7 +70,6 @@ function uiToggleDeviceConnected(connected) {
         // Hide controls
         elControls.classList.add("hidden");
     }
-
 }
 
 function uiToggleLoadingAnimation(isLoading) {
@@ -214,10 +213,12 @@ function liffGetUserService(service) {
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
+
     // Toggle LED
     service.getCharacteristic(LED_CHARACTERISTIC_UUID).then(characteristic => {
         window.ledCharacteristic = characteristic;
         // Switch off by default
+
     }).catch(error => {
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -239,6 +240,7 @@ function liffGetPSDIService(service) {
 
 var dataString = '';
 var dataObj = {};
+var reTryCount = 0;
 function liffGetButtonStateCharacteristic(characteristic) {
     // Add notification hook for button state
     // (Get notified when button state changes)
@@ -255,7 +257,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                         case 'refreshWifi':
                             window.app.wifiList = dataObj.data;
                             break;
-                        case 'getModal':
+                        case 'getModel':
                             window.app.model = dataObj.model;
                             window.app.saveModel();
                             setTimeout(() => {
@@ -265,13 +267,34 @@ function liffGetButtonStateCharacteristic(characteristic) {
                         default:
                             break;
                     }
+                    dataString = '';
                     window.modal.close();
+                    reTryCount = 0;
                 } catch (error) {
                     console.log('JSON.parse(dataString) GG', error);
-                    alert('發生錯誤請重新操作');
                     window.modal.close();
+                    reTryCount++;
+                    if (reTryCount !== 3) {
+                        setTimeout(() => {
+                            switch (window.app.dataMode) {
+                                case 'refreshWifi':
+                                    refreshWIFI();
+                                    break;
+                                case 'getModel':
+                                    getModel()
+                                    break;
+                                case 'setWifi':
+                                    setWIFI();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }, 300);
+                    } else {
+                        reTryCount = 0;
+                        alert('藍芽接收發生錯誤，請重新嘗試。');
+                    }
                 }
-                dataString = '';
             } else {
                 dataString += uint8arrayString;
             }
@@ -282,13 +305,6 @@ function liffGetButtonStateCharacteristic(characteristic) {
 }
 
 var demoData = { "data": [{ "SSID": "Test WIFI" }] };
-// reflash();
-function reflash() {
-    demoData.data.forEach(element => {
-        // SSIDel.add(new Option(element.SSID, element.SSID));
-    });
-    M.AutoInit();
-}
 
 function setWIFI() {
     console.log('setWIFI Function Go');
@@ -302,30 +318,30 @@ function setWIFI() {
 
 function refreshWIFI() {
     console.log('refreshWIFI Function Go');
-    window.modal.open();
     obj = { mode: 'refreshWifi' };
+    BTLsend(obj);
+}
+
+function getModel() {
+    console.log('getModel Function Go');
+    obj = { mode: 'getModel' };
+    BTLsend(obj);
+}
+
+let loadingTextZh = {
+    refreshWifi: 'WIFI掃描中..',
+    getModel: '取得型號中...',
+    setWifi: 'WIFI設定中...',
+};
+
+function BTLsend(obj) {
+    window.modal.open();
     if (location.hostname === '') {
         setTimeout(() => {
             window.modal.close();
         }, 2000);
         return;
     }
-    BTLsend(obj);
-}
-
-function getModal() {
-    console.log('getModal Function Go');
-    obj = { mode: 'getModal' };
-    BTLsend(obj);
-}
-
-let loadingTextZh = {
-    refreshWifi: 'WIFI掃描中..',
-    getModal: '取得型號中...',
-    setWifi: 'WIFI設定中...',
-};
-
-function BTLsend(obj) {
     window.app.dataMode = obj.mode;
     window.app.loadingText = loadingTextZh[obj.mode];
     const enc = new TextEncoder(); // always utf-8
