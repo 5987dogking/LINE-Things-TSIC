@@ -181,8 +181,8 @@
                 img.onload = function () {
                     const canvas = document.getElementById('canvas');
                     console.log('this.width', this.width);
-                    canvas.width = this.width / 2;
-                    canvas.height = this.height / 2;
+                    canvas.width = this.width;
+                    canvas.height = this.height;
                     console.log('this.canvas', canvas);
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
