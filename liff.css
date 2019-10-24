@@ -115,3 +115,11 @@ p {
 .z-depth-3 {
   padding-top: 10px;
 }
+
+.modal {
+  overflow: hidden;
+}
+
+.mtop {
+  margin-top: 15px;
+}

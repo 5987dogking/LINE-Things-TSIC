@@ -14,24 +14,6 @@
     <link rel="stylesheet" type="text/css" href="liff.css" />
 </head>
 <script>
-    const apiUrl = 'https://focusdc.com.tw/air/api/log/get_sensor/{deviceid}';
-    function registerModel() {
-        const model = window.app.model;
-        const registerData = {
-            model: model,
-            userId: window.app.profile.userId,
-        };
-        axios.post(apiUrl + '/', registerData)
-            .then((response) => {
-                // handle success
-                console.log(response);
-            })
-            .catch((error) => {
-                // handle error
-                console.log(error);
-            })
-    }
-
     let vConsole_i = 0;
     function vConsoleShow() {
         vConsole_i++;
@@ -45,6 +27,15 @@
     .collapsible-header {
         justify-content: space-between;
     }
+
+    .collapsible li {
+        height: 57px;
+    }
+
+    .collapsible li a {
+        float: right;
+        height: 100%;
+    }
 </style>
 
 <body>
@@ -53,30 +44,38 @@
             <h4 @click="vConsoleShow()">您的設備列表</h4>
             <span class="grey-text" style="font-size: 0.75em;">({{profile.userId}})</span>
             <ul class="collapsible" v-if="ownModels.length > 0">
-                <li v-for="(model, index) in ownModels" @click="getModalData(model);page=2;">
-                    <div class="collapsible-header"><i class="material-icons">filter_drama</i>
-                        {{model.substr(0,2)=='AS'?'空氣品質感測器':''}}
+                <li v-for="(model, index) in ownModels">
+                    <!-- <a class='dropdown-trigger btn flexCC white black-text' href='#' data-target='dropdown1'><i
+                            class="material-icons medium">more_vert</i></a> -->
+                    <div class="collapsible-header" @click="getModalData(model);page=2;">
+                        <i class="material-icons">filter_drama</i>
+                        {{model.substr(0,2)=='AR'?'空氣品質感測器':''}}
                         <span>{{model}}</span>
                     </div>
+
                 </li>
             </ul>
+            <!-- <ul id='dropdown1' class='dropdown-content'>
+                <li><a href="#!"><i class="material-icons">delete</i>刪除</a></li>
+            </ul> -->
         </div>
 
-
         <div v-if="page == 2">
-            <h4>{{targetModel.substr(0,2)=='AS'?'空氣品質感測器':''}}</h4>
+            <a class="waves-effect waves-light btn indigo btn-block flexCC mtop" @click="page=1">
+                <i class="material-icons medium">keyboard_arrow_left</i>&nbsp;回上一頁
+            </a>
+            <h4>{{targetModel.substr(0,2)=='AR'?'空氣品質感測器':''}}</h4>
             <span class="grey-text" style="font-size: 0.75em;">{{targetModel}}</span>
             <img :src="sensorSrc" width="100%">
             <canvas id="canvas" style="display: none;"></canvas>
-            <br>
-            <br>
-            <a class="waves-effect waves-light btn indigo btn-block" @click="page=1">回上一頁</a>
+            <img src="assets/images/sensorImgTable1.jpg" class="mtop" width="100%">
+            <img src="assets/images/sensorImgTable2.jpg" class="mtop" width="100%">
         </div>
 
         <!-- Modal Structure -->
         <div id="modal1" class="modal">
             <div class="modal-content">
-                <h4>{{loadingText}}</h4>
+                <h4>資料載入中...</h4>
                 <br>
                 <div class="preloader-wrapper big active">
                     <div class="spinner-layer spinner-blue-only">
@@ -106,9 +105,7 @@
             vConsole_i: 0,
             profile: {},
             apiUrl: 'https://focusdc.com.tw/air/api/log/get_sensor/',
-            ownModels: [
-
-            ],
+            ownModels: ['ok'],
             sensorData: {},
             sensorSrc: 'https://5987dogking.github.io/LINE-Things-TSIC/assets/images/sensorImg.jpg',
             targetModel: '',
@@ -170,10 +167,12 @@
                         this.ownModels = data.ownModels;
                     } else {
                         console.log("No such document!");
-
+                        alert('找不到設備資料，請先連結設備。');
                     }
+                    modal.close();
                 }).catch(function (error) {
                     console.log("Error getting document:", error);
+                    modal.close();
                 });
             },
             canvasPrint() {
@@ -193,8 +192,8 @@
                     console.log('sensorData', window.app.sensorData);
                     ctx.fillText(window.app.sensorData.CO2, 270, 380);
                     ctx.fillText(window.app.sensorData.PM, 870, 380);
-                    ctx.fillText(window.app.sensorData.temperature, 270, 820);
-                    ctx.fillText(window.app.sensorData.humidity, 900, 820);
+                    ctx.fillText(Math.round(window.app.sensorData.temperature * 10) / 10, 270, 820);
+                    ctx.fillText(Math.round(window.app.sensorData.humidity * 10) / 10, 900, 820);
                     //temperature humidity
                     ctx.stroke();
                     const dataURL = canvas.toDataURL('image/jpeg');
@@ -227,6 +226,8 @@
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
     window.onload = () => {
+        modalEle = document.getElementById('modal1')
+        modal = M.Modal.init(modalEle, { dismissible: false });
         if (location.hostname === '') {
             window.app.profile = {
                 userId: "Ud1d085be5a554acca6a6bb3f5a496bfc",
@@ -236,14 +237,19 @@
             };
         }
         liff.init({ liffId: window.app.liffId }).then(() => {
+            modal.open();
             liff.getProfile().then(profile => {
                 window.app.profile = profile;
                 window.app.getUserData();
             }).catch((err) => {
                 console.log('error', err);
+                modal.close();
+                alert('LINE LIFF 資料讀取失敗');
             });
         }).catch((err) => {
             console.log(error);
+            modal.close();
+            alert('LINE LIFF 載入失敗');
         });
     };
 </script>
