@@ -13,16 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" type="text/css" href="liff.css" />
 </head>
-<script>
-    let vConsole_i = 0;
-    function vConsoleShow() {
-        vConsole_i++;
-        if (vConsole_i === 8) {
-            var vConsole = new VConsole();
-        }
-    }
-</script>
-
 <style>
     .collapsible-header {
         justify-content: space-between;
@@ -112,8 +102,8 @@
         },
         methods: {
             vConsoleShow() {
-                vConsole_i++;
-                if (vConsole_i === 4) {
+                this.vConsole_i++;
+                if (this.vConsole_i === 4) {
                     var vConsole = new VConsole();
                 }
             },
