@@ -97,6 +97,7 @@ function uiStatusError(message, showLoadingAnimation) {
         'The characteristic is not found in the service.': '藍牙發生錯誤。',
     };
     uiToggleLoadingAnimation(showLoadingAnimation);
+    console.log('uiStatusError', message, showLoadingAnimation);
     const elStatus = document.getElementById("status");
     const elControls = document.getElementById("controls");
     // Show status error
