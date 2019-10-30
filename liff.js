@@ -57,9 +57,9 @@ function uiToggleDeviceConnected(connected) {
         elStatus.innerText = "Device connected";
         // Show controls
         elControls.classList.remove("hidden");
-        setTimeout(() => {
-            getModel();
-        }, 1000);
+        // setTimeout(() => {
+        //     getModel();
+        // }, 1000);
     } else {
         // Show loading animation
         uiToggleLoadingAnimation(true);
@@ -223,7 +223,10 @@ function liffGetUserService(service) {
         // liffGetButtonStateCharacteristic(characteristic);
         setTimeout(() => {
             liffGetButtonStateCharacteristic(characteristic);
-        }, 3000);
+            setTimeout(() => {
+                getModel();
+            }, 500);
+        }, 2000);
     }).catch(error => {
         console.log('liffGetUserService', service);
         uiStatusError(makeErrorMsg(error), false);
