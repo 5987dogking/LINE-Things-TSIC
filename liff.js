@@ -328,7 +328,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
             uint8arrayStringHistory = uint8arrayString;
         });
     }).catch(error => {
-        console.log('liffGetButtonStateCharacteristic');
+        console.log('liffGetButtonStateCharacteristic', error);
         uiStatusError(makeErrorMsg(error), false);
     });
 }
