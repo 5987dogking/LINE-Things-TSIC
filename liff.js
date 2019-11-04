@@ -256,7 +256,7 @@ function liffGetPSDIService(service) {
     }).catch(error => {
         console.log('liffGetPSDIService');
         setTimeout(() => {
-            initializeLiff();
+            location.reload();
         }, 1500);
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -343,7 +343,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     }).catch(error => {
         console.log('liffGetButtonStateCharacteristic', error);
         setTimeout(() => {
-            initializeLiff();
+            location.reload();
         }, 1500);
         uiStatusError(makeErrorMsg(error), false);
     });
