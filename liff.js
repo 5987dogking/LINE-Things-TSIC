@@ -224,14 +224,10 @@ function liffGetUserService(service) {
         try {
             setTimeout(() => {
                 liffGetButtonStateCharacteristic(characteristic);
-                setTimeout(() => {
-                    getModel();
-                }, 500);
             }, 500);
         } catch (error) {
             liffGetUserService(service);
         }
-
     }).catch(error => {
         console.log('liffGetUserService', service);
         uiStatusError(makeErrorMsg(error), false);
@@ -338,10 +334,17 @@ function liffGetButtonStateCharacteristic(characteristic) {
             }
             uint8arrayStringHistory = uint8arrayString;
         });
+        setTimeout(() => {
+            getModel();
+        }, 500);
     }).catch(error => {
         console.log('liffGetButtonStateCharacteristic', error);
+        setTimeout(() => {
+            liffGetButtonStateCharacteristic(characteristic)
+        }, 500);
         uiStatusError(makeErrorMsg(error), false);
     });
+
 }
 
 var demoData = { "data": [{ "SSID": "Test WIFI" }] };
