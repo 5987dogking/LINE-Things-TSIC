@@ -256,7 +256,8 @@ function liffGetPSDIService(service) {
     }).catch(error => {
         console.log('liffGetPSDIService');
         setTimeout(() => {
-            location.reload();
+            alert('發生錯誤，請清除LINE Things我的裝置列表，然後重新連線。');
+            liff.closeWindow();
         }, 1500);
         uiStatusError(makeErrorMsg(error), false);
     });
@@ -343,7 +344,8 @@ function liffGetButtonStateCharacteristic(characteristic) {
     }).catch(error => {
         console.log('liffGetButtonStateCharacteristic', error);
         setTimeout(() => {
-            location.reload();
+            alert('發生錯誤，請清除LINE Things我的裝置列表，然後重新連線。');
+            liff.closeWindow();
         }, 1500);
         uiStatusError(makeErrorMsg(error), false);
     });
