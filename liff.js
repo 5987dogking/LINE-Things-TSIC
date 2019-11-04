@@ -221,12 +221,17 @@ function liffGetUserService(service) {
     // Button pressed state
     service.getCharacteristic(BTN_CHARACTERISTIC_UUID).then(characteristic => {
         // liffGetButtonStateCharacteristic(characteristic);
-        setTimeout(() => {
-            liffGetButtonStateCharacteristic(characteristic);
+        try {
             setTimeout(() => {
-                getModel();
+                liffGetButtonStateCharacteristic(characteristic);
+                setTimeout(() => {
+                    getModel();
+                }, 500);
             }, 500);
-        }, 2000);
+        } catch (error) {
+            liffGetUserService(service);
+        }
+
     }).catch(error => {
         console.log('liffGetUserService', service);
         uiStatusError(makeErrorMsg(error), false);
@@ -391,4 +396,18 @@ function BTLsend(obj) {
         console.log('送出失敗', error);
         alert('送出失敗');
     }
+}
+
+function mkBTL() {
+    const filterName = 'LINE@百葉箱';
+    let filters = [{ name: filterName }];
+    let options = {};
+    options.filters = filters;
+    navigator.bluetooth.requestDevice(options)
+        .then(device => {
+            console.log('> Name:             ' + device.name);
+            console.log('> Id:                 ' + device.id);
+            console.log('> Connected:        ' + device.gatt.connected);
+        })
+        .catch(error => { console.log(error); });
 }
