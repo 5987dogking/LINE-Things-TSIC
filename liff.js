@@ -340,7 +340,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     }).catch(error => {
         console.log('liffGetButtonStateCharacteristic', error);
         setTimeout(() => {
-            liffGetButtonStateCharacteristic(characteristic)
+            initializeLiff();
         }, 500);
         uiStatusError(makeErrorMsg(error), false);
     });
