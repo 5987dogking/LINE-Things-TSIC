@@ -328,7 +328,11 @@ function liffGetButtonStateCharacteristic(characteristic) {
                         }, 750);
                     } else {
                         reTryCount = 0;
-                        alert('藍芽接收發生錯誤，請重新嘗試。');
+                        if (window.app.dataMode === 'getModel') {
+                            alert('LINE出現狀況，建議使用手動輸入WIFI帳號及密碼。');
+                        } else {
+                            alert('LINE出現狀況，藍芽接收發生錯誤，請重新嘗試。');
+                        }
                     }
                 }
             } else {
