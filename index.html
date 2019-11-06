@@ -47,17 +47,26 @@
     <div id="controls" class="hidden"></div>
     <div v-if="wifiStatus.isConnect === false">
       <hr />
-      <a class="waves-effect waves-light indigo btn right" style="font-size: 14px;" id="refreshWIFIBtn">
+      <a class="left" style="font-size: 14px;" @click="manualMode=!manualMode">
+        <span v-if="!manualMode">手動輸入WIFI名稱密碼</span>
+        <span v-if="manualMode">自動搜尋WIFI名稱</span>
+      </a>
+      <a class="waves-effect waves-light indigo btn right" style="font-size: 14px;" id="refreshWIFIBtn"
+        v-if="!manualMode">
         &nbsp; 刷新WIFI <i class="material-icons right">cached</i>
       </a>
-      <select v-model="wifiConfig.SSID" class="browser-default">
+      <select v-model="wifiConfig.SSID" class="browser-default" v-if="!manualMode">
         <option value="" disabled selected>請選擇WIFI</option>
         <option v-for="wifi in wifiList" v-bind:value="wifi.SSID">
           {{ wifi.SSID }}
         </option>
       </select>
       <br>
-      <div class="input-field col s12" v-if="wifiConfig.SSID !== ''">
+      <div class="input-field col s12" v-if="manualMode">
+        <input placeholder="輸入WIFI名稱" type="text" v-model="wifiConfig.SSID" class="validate">
+        <label for="first_name" class="active">{{wifiConfig.SSID}}</label>
+      </div>
+      <div class="input-field col s12" v-if="wifiConfig.SSID !== '' || manualMode">
         <input placeholder="輸入WIFI密碼" type="text" v-model="wifiConfig.password" class="validate">
         <label for="first_name" class="active">{{wifiConfig.SSID}}</label>
       </div>
@@ -122,6 +131,7 @@
       model: '',
       loadingText: 'WIFI掃描中...',
       dataMode: '',
+      manualMode: false,
       profile: {},
     },
     methods: {
