@@ -412,7 +412,6 @@ let loadingTextZh = {
 };
 
 function BTLsend(obj) {
-    window.modal.open();
     if (location.hostname === '') {
         setTimeout(() => {
             window.modal.close();
@@ -420,6 +419,7 @@ function BTLsend(obj) {
         return;
     }
     if (obj !== ' ') {
+        window.modal.open();
         window.app.dataMode = obj.mode;
         window.app.loadingText = loadingTextZh[obj.mode];
     }
@@ -427,10 +427,12 @@ function BTLsend(obj) {
     const postText = JSON.stringify(obj);
     const postTextUtf8 = enc.encode(postText);
     try {
-        window.ledCharacteristic.writeValue(postTextUtf8).catch(error => {
-            console.log('BTLsend uiStatusError');
-            uiStatusError(makeErrorMsg(error), false);
-        });
+        if (obj !== ' ') {
+            window.ledCharacteristic.writeValue(postTextUtf8).catch(error => {
+                console.log('BTLsend uiStatusError');
+                uiStatusError(makeErrorMsg(error), false);
+            });
+        }
     } catch (error) {
         console.log('送出失敗', error);
         alert('送出失敗');
