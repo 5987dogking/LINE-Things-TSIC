@@ -419,8 +419,10 @@ function BTLsend(obj) {
         }, 2000);
         return;
     }
-    window.app.dataMode = obj.mode;
-    window.app.loadingText = loadingTextZh[obj.mode];
+    if (obj.trim() !== '') {
+        window.app.dataMode = obj.mode;
+        window.app.loadingText = loadingTextZh[obj.mode];
+    }
     const enc = new TextEncoder(); // always utf-8
     const postText = JSON.stringify(obj);
     const postTextUtf8 = enc.encode(postText);
