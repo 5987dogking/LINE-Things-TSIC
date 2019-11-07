@@ -213,7 +213,10 @@ function liffConnectToDevice(device) {
             // Reset LED state
             ledState = false;
             // Try to reconnect
-            initializeLiff();
+            if (window.app.model !== 'setWifi') {
+                initializeLiff();
+            }
+           
         };
         device.addEventListener('gattserverdisconnected', disconnectCallback);
     }).catch(error => {
@@ -368,10 +371,12 @@ function liffGetButtonStateCharacteristic(characteristic) {
             }
             uint8arrayStringHistory = uint8arrayString;
         });
-        setTimeout(() => {
-            getModel();
-            allwaysON();
-        }, 500);
+        if (window.app.model !== 'setWifi') {
+            setTimeout(() => {
+                getModel();
+                allwaysON();
+            }, 500);
+        }
     }).catch(error => {
         console.log('liffGetButtonStateCharacteristic', error);
         setTimeout(() => {
