@@ -252,7 +252,7 @@ function liffGetUserService(service) {
 function allwaysON() {
     setTimeout(() => {
         BTLsend(' ');
-        allawaysON();
+        allwaysON();
     }, 250);
 }
 
