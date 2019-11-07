@@ -419,7 +419,7 @@ function BTLsend(obj) {
         }, 2000);
         return;
     }
-    if (obj.trim() !== '') {
+    if (obj !== ' ') {
         window.app.dataMode = obj.mode;
         window.app.loadingText = loadingTextZh[obj.mode];
     }
