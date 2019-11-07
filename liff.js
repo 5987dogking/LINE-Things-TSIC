@@ -333,7 +333,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                         }, 750);
                     } else {
                         reTryCount = 0;
-                        if (window.app.dataMode === 'getModel') {
+                        if (window.app.dataMode === 'refreshWifi') {
                             alert('LINE出現狀況，建議使用手動輸入WIFI帳號及密碼。');
                         } else {
                             alert('LINE出現狀況，藍芽接收發生錯誤，請重新嘗試。');
@@ -390,6 +390,10 @@ let loadingTextZh = {
     getModel: '取得型號中...',
     setWifi: 'WIFI設定中...',
 };
+
+setTimeout(() => {
+    BTLsend('');
+}, 500);
 
 function BTLsend(obj) {
     window.modal.open();
