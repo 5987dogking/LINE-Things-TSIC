@@ -11,7 +11,7 @@ let clickCount = 0;
 // On window load //
 // -------------- //
 // document.getElementById("btn-led-toggle").addEventListener("click",handlerToggleLed);
-
+var mySetTimeOut;
 window.onload = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const queryLiffId = urlParams.get('liffId');
@@ -284,6 +284,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
     // (Get notified when button state changes)
     characteristic.startNotifications().then(() => {
         characteristic.addEventListener('characteristicvaluechanged', e => {
+            clearTimeout(mySetTimeOut);
             const val = (new Uint8Array(e.target.value.buffer))[0];
             const uint8array = new Uint8Array(e.target.value.buffer);
             const uint8arrayString = new TextDecoder("utf-8").decode(uint8array);
@@ -423,6 +424,13 @@ function BTLsend(obj) {
         window.modal.open();
         window.app.dataMode = obj.mode;
         window.app.loadingText = loadingTextZh[obj.mode];
+        if (obj.mode !== 'setWifi') {
+            mySetTimeOut = setTimeout(() => {
+                window.modal.close();
+                alert('發生錯誤，請清除LINE Things我的裝置列表，然後重新連線。');
+                liff.closeWindow();
+            }, 7000);
+        }
     }
     const enc = new TextEncoder(); // always utf-8
     const postText = JSON.stringify(obj);
