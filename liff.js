@@ -334,11 +334,18 @@ function liffGetButtonStateCharacteristic(characteristic) {
                         reTryCount = 0;
                         if (window.app.dataMode === 'refreshWifi') {
                             console.log('dataString1', dataString);
-                            dataString = dataString.split('SSID').join('').split('"').join('');
-                            dataString = dataString.split('{').join('').split('}').join('').split(']').join('').split('[').join('').split('[').join('');
-                            dataString = dataString.split('data:').join('').split(' ').join('').split(':').join('').split(',');
-                            console.log('dataString2', dataString);
-                            window.app.wifiList = dataString;
+                            wifiListArr = [];
+                            wifiListStr = dataString.split('SSID').join('').split('"').join('');
+                            wifiListStr = wifiListStr.split('{').join('').split('}').join('').split(']').join('').split('[').join('').split('[').join('');
+                            wifiListArr = wifiListStr.split('data:').join('').split(' ').join('').split(':').join('').split(',');
+                            console.log('wifiListArr', wifiListArr);
+                            wifiListArr.forEach(
+                                SSID => {
+                                    if (SSID !== '') {
+                                        window.app.wifiList.push({ SSID: SSID });
+                                    }
+                                }
+                            );
                             alert('LINE出現狀況，如清單內無正確WIFI名稱，建議使用手動輸入WIFI帳號及密碼。');
                         } else {
                             alert('LINE出現狀況，藍芽接收發生錯誤，請重新嘗試。');
