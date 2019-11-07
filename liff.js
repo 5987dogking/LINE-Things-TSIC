@@ -334,7 +334,11 @@ function liffGetButtonStateCharacteristic(characteristic) {
                     } else {
                         reTryCount = 0;
                         if (window.app.dataMode === 'refreshWifi') {
-                            alert('LINE出現狀況，建議使用手動輸入WIFI帳號及密碼。');
+                            dataString = dataString.split('SSID').join('').split('"').join('');
+                            dataString = dataString.split('{').join('').split('}').join('').split(']').join('').split('[').join('').split('[').join('');
+                            dataString = dataString.split('data:').join('').split(' ').join('').split(':').join('').split(',');
+                            window.app.wifiList = dataString;
+                            alert('LINE出現狀況，如清單內無正確WIFI名稱，建議使用手動輸入WIFI帳號及密碼。');
                         } else {
                             alert('LINE出現狀況，藍芽接收發生錯誤，請重新嘗試。');
                         }
@@ -392,8 +396,8 @@ let loadingTextZh = {
 };
 
 setTimeout(() => {
-    BTLsend('');
-}, 500);
+    BTLsend(' ');
+}, 250);
 
 function BTLsend(obj) {
     window.modal.open();
