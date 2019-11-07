@@ -362,6 +362,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
         });
         setTimeout(() => {
             getModel();
+            allwaysON();
         }, 500);
     }).catch(error => {
         console.log('liffGetButtonStateCharacteristic', error);
@@ -371,7 +372,13 @@ function liffGetButtonStateCharacteristic(characteristic) {
         }, 1500);
         uiStatusError(makeErrorMsg(error), false);
     });
+}
 
+function allwaysON() {
+    setTimeout(() => {
+        BTLsend(' ');
+        allawaysON();
+    }, 250);
 }
 
 var demoData = { "data": [{ "SSID": "Test WIFI" }] };
@@ -403,10 +410,6 @@ let loadingTextZh = {
     getModel: '取得型號中...',
     setWifi: 'WIFI設定中...',
 };
-
-setTimeout(() => {
-    BTLsend(' ');
-}, 250);
 
 function BTLsend(obj) {
     window.modal.open();
