@@ -1,4 +1,4 @@
-const USER_SERVICE_UUID = '9cfc60ec-4b8d-48aa-b089-4a56ca7ccab3'; // serviceUuid
+let USER_SERVICE_UUID = '9cfc60ec-4b8d-48aa-b089-4a56ca7ccab3'; // serviceUuid
 const PSDI_SERVICE_UUID = 'e625601e-9e55-4597-a598-76018a0d293d'; // psdiServiceUuid
 const PSDI_CHARACTERISTIC_UUID = '26e2b12b-85f0-4f3f-9fdd-91d114270e6e';// psdiCharacteristicUuid
 const LED_CHARACTERISTIC_UUID = 'E9062E71-9E62-4BC6-B0D3-35CDCD9B027B';
@@ -13,6 +13,11 @@ let clickCount = 0;
 // document.getElementById("btn-led-toggle").addEventListener("click",handlerToggleLed);
 
 window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryLiffId = urlParams.get('liffId');
+    const queryUS_UUID = urlParams.get('USER_SERVICE_UUID');
+    window.USER_SERVICE_UUID = (queryUS_UUID !== null) ? queryUS_UUID : window.USER_SERVICE_UUID;
+    window.app.liffId = (queryLiffId !== null) ? queryLiffId : window.app.liffId;
     initializeApp();
     modalEle = document.getElementById('modal1')
     modal = M.Modal.init(modalEle, { dismissible: false });
