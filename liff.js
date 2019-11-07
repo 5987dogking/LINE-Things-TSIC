@@ -256,7 +256,7 @@ function allwaysON() {
     setTimeout(() => {
         BTLsend(' ');
         allwaysON();
-    }, 250);
+    }, 50);
 }
 
 function liffGetPSDIService(service) {
