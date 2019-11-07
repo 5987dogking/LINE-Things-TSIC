@@ -249,6 +249,13 @@ function liffGetUserService(service) {
     });
 }
 
+function allwaysON() {
+    setTimeout(() => {
+        BTLsend(' ');
+        allawaysON();
+    }, 250);
+}
+
 function liffGetPSDIService(service) {
     // Get PSDI value
     service.getCharacteristic(PSDI_CHARACTERISTIC_UUID).then(characteristic => {
@@ -372,13 +379,6 @@ function liffGetButtonStateCharacteristic(characteristic) {
         }, 1500);
         uiStatusError(makeErrorMsg(error), false);
     });
-}
-
-function allwaysON() {
-    setTimeout(() => {
-        BTLsend(' ');
-        allawaysON();
-    }, 250);
 }
 
 var demoData = { "data": [{ "SSID": "Test WIFI" }] };
