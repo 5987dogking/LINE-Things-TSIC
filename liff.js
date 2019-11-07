@@ -312,7 +312,6 @@ function liffGetButtonStateCharacteristic(characteristic) {
                 } catch (error) {
                     console.log('JSON.parse(dataString) GG', error);
                     console.log('dataString =>', dataString);
-                    dataString = '';
                     window.modal.close();
                     reTryCount++;
                     if (reTryCount !== 3) {
@@ -345,6 +344,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                             alert('LINE出現狀況，藍芽接收發生錯誤，請重新嘗試。');
                         }
                     }
+                    dataString = '';
                 }
             } else {
                 if (uint8arrayStringHistory !== uint8arrayString) {
