@@ -334,9 +334,11 @@ function liffGetButtonStateCharacteristic(characteristic) {
                     } else {
                         reTryCount = 0;
                         if (window.app.dataMode === 'refreshWifi') {
+                            console.log('dataString1', dataString);
                             dataString = dataString.split('SSID').join('').split('"').join('');
                             dataString = dataString.split('{').join('').split('}').join('').split(']').join('').split('[').join('').split('[').join('');
                             dataString = dataString.split('data:').join('').split(' ').join('').split(':').join('').split(',');
+                            console.log('dataString2', dataString);
                             window.app.wifiList = dataString;
                             alert('LINE出現狀況，如清單內無正確WIFI名稱，建議使用手動輸入WIFI帳號及密碼。');
                         } else {
