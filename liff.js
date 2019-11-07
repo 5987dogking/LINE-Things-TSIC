@@ -419,6 +419,7 @@ function BTLsend(obj) {
         return;
     }
     if (obj !== ' ') {
+        console.log('send obj', obj);
         window.modal.open();
         window.app.dataMode = obj.mode;
         window.app.loadingText = loadingTextZh[obj.mode];
@@ -429,7 +430,7 @@ function BTLsend(obj) {
     try {
         if (obj !== ' ') {
             window.ledCharacteristic.writeValue(postTextUtf8).catch(error => {
-                console.log('BTLsend uiStatusError');
+                console.log('BTLsend uiStatusError =>', error, '<=');
                 uiStatusError(makeErrorMsg(error), false);
             });
         }
