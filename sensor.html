@@ -120,12 +120,13 @@
                 }
             },
             saveModel() {
-                let newUserDataRefData = JSON.parse(JSON.stringify(this.userDataRefData));
-                newUserDataRefData.ownModels.splice(this.targetModelI, 1);
-                db.collection("users").doc(this.profile.userId).set(newUserDataRefData).then((result) => {
-                    M.toast({ html: '刪除成功' })
-                }).catch((err) => {
-
+                var batch = db.batch();
+                var nycRef = db.collection("users").doc(this.profile.userId);
+                let ownModels = this.userDataRefData.ownModels;
+                ownModels.splice(this.targetModelI, 1);
+                batch.update(nycRef, { ownModels: ownModels });
+                batch.commit().then(() => {
+                    M.toast({ html: '刪除成功' });
                 });
             },
             getModalData(targetModel) {
@@ -146,22 +147,8 @@
                 const userDataRef = db.collection("users").doc(this.profile.userId);
                 userDataRef.onSnapshot((doc) => {
                     this.userDataRefData = doc.data();
+                    modal.close();
                 });
-                // userDataRef.get().then((doc) => {
-                //     if (doc.exists) {
-                //         let data = doc.data();
-                //         console.log("Document data:", data);
-                //         this.ownModels = data.ownModels;
-                //         this.userDataRefData = data;
-                //     } else {
-                //         console.log("No such document!");
-                //         alert('找不到設備資料，請先連結設備。');
-                //     }
-                //     modal.close();
-                // }).catch(function (error) {
-                //     console.log("Error getting document:", error);
-                //     modal.close();
-                // });
             },
             canvasPrint() {
                 const img = new Image();
@@ -230,10 +217,8 @@
             liff.getProfile().then(profile => {
                 window.app.profile = profile;
                 window.app.getUserData();
-                modal.close();
             }).catch((err) => {
                 console.log('error', err);
-                modal.close();
                 if (location.hostname !== '') {
                     alert('LINE LIFF 資料讀取失敗');
                 }
