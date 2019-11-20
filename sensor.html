@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vConsole/3.3.0/vconsole.min.js"></script>
@@ -33,21 +33,19 @@
         <div v-if="page == 1">
             <h4 @click="vConsoleShow()">您的設備列表</h4>
             <span class="grey-text" style="font-size: 0.75em;">({{profile.userId}})</span>
-            <ul class="collapsible" v-if="ownModels.length > 0">
-                <li v-for="(model, index) in ownModels">
-                    <!-- <a class='dropdown-trigger btn flexCC white black-text' href='#' data-target='dropdown1'><i
-                            class="material-icons medium">more_vert</i></a> -->
+            <ul class="collapsible" v-if="userDataRefData.ownModels.length > 0">
+                <li v-for="(model, index) in userDataRefData.ownModels">
+                    <a class="waves-effect waves-light red btn flexCC  modal-trigger" href="#modalDelete"
+                        @click="targetModel = model;targetModelI = index">
+                        <i class="material-icons left large" style="margin: auto;font-size: 1.75rem;">delete</i>
+                    </a>
                     <div class="collapsible-header" @click="getModalData(model);page=2;">
                         <i class="material-icons">filter_drama</i>
                         {{model.substr(0,2)=='AR'?'空氣品質感測器':''}}
                         <span>{{model}}</span>
                     </div>
-
                 </li>
             </ul>
-            <!-- <ul id='dropdown1' class='dropdown-content'>
-                <li><a href="#!"><i class="material-icons">delete</i>刪除</a></li>
-            </ul> -->
         </div>
 
         <div v-if="page == 2">
@@ -82,11 +80,23 @@
                 </div>
             </div>
         </div>
+
+        <div id="modalDelete" class="modal">
+            <div class="modal-content">
+                <h4>系統</h4>
+                <p>是否刪除設備 {{targetModel}} ?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">否</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat red white-text"
+                    @click="saveModel()">確定刪除</a>
+            </div>
+        </div>
     </div>
 
 </body>
 <script>
-    M.AutoInit();
+    var userDataRef;
     app = new Vue({
         el: '#app',
         data: {
@@ -99,6 +109,8 @@
             sensorData: {},
             sensorSrc: 'https://5987dogking.github.io/LINE-Things-TSIC/assets/images/sensorImg.jpg',
             targetModel: '',
+            targetModelI: 0,
+            userDataRefData: { ownModels: [] },
         },
         methods: {
             vConsoleShow() {
@@ -108,30 +120,12 @@
                 }
             },
             saveModel() {
-                var docRef = db.collection("users").doc(this.profile.userId);
-                docRef.get().then((doc) => {
-                    if (doc.exists) {
-                        let data = doc.data();
-                        console.log("Document data:", data);
-                        if (data.ownModels.indexOf(this.model) === -1) {
-                            data.ownModels.push(this.model);
-                            docRef.set(data);
-                        }
-                    } else {
-                        console.log("No such document!");
-                        db.collection("users").doc(this.profile.userId).set({
-                            ... this.profile,
-                            ownModels: [this.model],
-                            wifiList: this.wifiList,
-                            wifiConfig: this.wifiConfig,
-                        }).then(function (docRef) {
-                            console.log("Document written with ID: ", docRef.id);
-                        }).catch(function (error) {
-                            console.error("Error adding document: ", error);
-                        });
-                    }
-                }).catch(function (error) {
-                    console.log("Error getting document:", error);
+                let newUserDataRefData = JSON.parse(JSON.stringify(this.userDataRefData));
+                newUserDataRefData.ownModels.splice(this.targetModelI, 1);
+                db.collection("users").doc(this.profile.userId).set(newUserDataRefData).then((result) => {
+                    M.toast({ html: '刪除成功' })
+                }).catch((err) => {
+
                 });
             },
             getModalData(targetModel) {
@@ -149,21 +143,25 @@
                 })
             },
             getUserData() {
-                var docRef = db.collection("users").doc(this.profile.userId);
-                docRef.get().then((doc) => {
-                    if (doc.exists) {
-                        let data = doc.data();
-                        console.log("Document data:", data);
-                        this.ownModels = data.ownModels;
-                    } else {
-                        console.log("No such document!");
-                        alert('找不到設備資料，請先連結設備。');
-                    }
-                    modal.close();
-                }).catch(function (error) {
-                    console.log("Error getting document:", error);
-                    modal.close();
+                const userDataRef = db.collection("users").doc(this.profile.userId);
+                userDataRef.onSnapshot((doc) => {
+                    this.userDataRefData = doc.data();
                 });
+                // userDataRef.get().then((doc) => {
+                //     if (doc.exists) {
+                //         let data = doc.data();
+                //         console.log("Document data:", data);
+                //         this.ownModels = data.ownModels;
+                //         this.userDataRefData = data;
+                //     } else {
+                //         console.log("No such document!");
+                //         alert('找不到設備資料，請先連結設備。');
+                //     }
+                //     modal.close();
+                // }).catch(function (error) {
+                //     console.log("Error getting document:", error);
+                //     modal.close();
+                // });
             },
             canvasPrint() {
                 const img = new Image();
@@ -202,6 +200,7 @@
 <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-firestore.js"></script>
 <script>
+    M.AutoInit();
     // Your web app's Firebase configuration
     var firebaseConfig = {
         apiKey: "AIzaSyCaxBk624DKPVZC2iXZA0xVRzJVaSX3n10",
@@ -220,7 +219,7 @@
         modal = M.Modal.init(modalEle, { dismissible: false });
         if (location.hostname === '') {
             window.app.profile = {
-                userId: "Ud1d085be5a554acca6a6bb3f5a496bfc",
+                userId: "U951a9a5f27c43156528b4243322b1715",
                 displayName: "劉振維",
                 pictureUrl: "https://profile.line-scdn.net/0htukRqtJpK1pWKwRa2BxUDWpuJTchBS0SLkszbHcpIjh-SGoJOEptb3p5fG4sEm5fbUllOXsuJmx6",
                 statusMessage: "􀠁􀅶Quotation marks left􏿿 I'm a Hello World Engineer􀠁􀅷Quotation marks right􏿿",
@@ -234,7 +233,10 @@
             }).catch((err) => {
                 console.log('error', err);
                 modal.close();
-                alert('LINE LIFF 資料讀取失敗');
+                if (location.hostname !== '') {
+                    alert('LINE LIFF 資料讀取失敗');
+                }
+                window.app.getUserData();
             });
         }).catch((err) => {
             console.log(error);
