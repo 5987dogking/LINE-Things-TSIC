@@ -230,6 +230,7 @@
             liff.getProfile().then(profile => {
                 window.app.profile = profile;
                 window.app.getUserData();
+                modal.close();
             }).catch((err) => {
                 console.log('error', err);
                 modal.close();
@@ -243,6 +244,9 @@
             modal.close();
             alert('LINE LIFF 載入失敗');
         });
+        setTimeout(() => {
+            modal.close();
+        }, 5000);
     };
 </script>
 
