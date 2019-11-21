@@ -325,7 +325,8 @@ function liffGetButtonStateCharacteristic(characteristic) {
                     console.log('dataString =>', dataString);
                     window.modal.close();
                     reTryCount++;
-                    if (reTryCount >= 3 && window.app.dataMode !== 'refreshWifi') {
+                    reTryCount = (window.app.dataMode === 'refreshWifi') ? 3 : reTryCount;
+                    if (reTryCount !== 3) {
                         setTimeout(() => {
                             switch (window.app.dataMode) {
                                 case 'refreshWifi':
