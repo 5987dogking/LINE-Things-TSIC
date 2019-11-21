@@ -298,6 +298,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                     switch (window.app.dataMode) {
                         case 'refreshWifi':
                             window.app.wifiList = dataObj.data;
+                            window.app.wifiConfig.SSID = window.app.wifiList[0].SSID;
                             break;
                         case 'getModel':
                             window.app.model = dataObj.model;
