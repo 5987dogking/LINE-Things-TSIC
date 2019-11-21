@@ -100,6 +100,7 @@ void setup() {
 
   BLEDevice::init("");
   BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT_NO_MITM);
+  BLEDevice::setMTU(128);
 
   // Security Settings
   BLESecurity *thingsSecurity = new BLESecurity();
@@ -204,7 +205,7 @@ void actionWIFIGet() {
   {
     Serial.print(n);
     Serial.println(" networks found");
-    n = (n > 3) ? 3 : n;
+    //    n = (n > 3) ? 3 : n;
     for (int i = 0; i < n; ++i)
     {
       // Print SSID and RSSI for each network found
@@ -239,15 +240,23 @@ void sendData(const String& stringDatas)
   notifyCharacteristic->notify();
   delay(20);
   notifyCharacteristic->notify();
-  for (i = 0; i < (stringDatas.length() / 20) + 1; i++)
-  {
-    /* code */
-    stringData = stringDatas.substring(i * 20, (i + 1) * 20);
-    notifyCharacteristic->setValue(stringData.c_str());
-    notifyCharacteristic->notify();
-    Serial.println(stringData);
-    delay(30);
-  }
+  //  for (i = 0; i < (stringDatas.length() / 20) + 1; i++)
+  //  {
+  //    /* code */
+  //    notifyCharacteristic->setValue("");
+  //    notifyCharacteristic->notify();
+  //    delay(10);
+  //    notifyCharacteristic->setValue("");
+  //    notifyCharacteristic->notify();
+  //    delay(20);
+  //    stringData = stringDatas.substring(i * 20, (i + 1) * 20);
+  //    notifyCharacteristic->setValue(stringData.c_str());
+  //    notifyCharacteristic->notify();
+  //    Serial.println(stringData);
+  //    delay(5000);
+  //  }
+  notifyCharacteristic->setValue("012345678901234567890123456789");
+  notifyCharacteristic->notify();
   delay(200);
   notifyCharacteristic->setValue("BTLend");
   notifyCharacteristic->notify();

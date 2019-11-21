@@ -190,6 +190,7 @@ function liffConnectToDevice(device) {
         // document.getElementById("device-name").innerText = device.name;
         // document.getElementById("device-id").innerText = device.id;
         // Show status connected
+        console.log('device.gatt', device.gatt);
         uiToggleDeviceConnected(true);
         // Get service
         device.gatt.getPrimaryService(USER_SERVICE_UUID).then(service => {
