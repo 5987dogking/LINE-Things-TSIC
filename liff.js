@@ -294,7 +294,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
             const uint8array = new Uint8Array(e.target.value.buffer);
             const uint8arrayString = new TextDecoder("utf-8").decode(uint8array);
             if (isNaN(uint8arrayString.substr(0, 2))) {
-                arrayKey = uint8arrayString.substr(0, 2);
+                arrayKey = Number(uint8arrayString.substr(0, 2));
                 arrayVal = uint8arrayString.substr(2);
                 dataObjArr[arrayKey] = arrayVal;
             }
