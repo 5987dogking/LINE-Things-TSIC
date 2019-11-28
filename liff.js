@@ -301,6 +301,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
             console.log('BTL Get =>', uint8arrayString);
             if (uint8arrayString === 'BTLend' && uint8arrayStringHistory !== 'BTLend') {
                 console.log('dataObjArr =>', dataObjArr);
+                console.log('dataObjArrJoin =>', dataObjArr.join(''));
                 try {
                     try {
                         dataObj = JSON.parse(dataObjArr.join(''));
