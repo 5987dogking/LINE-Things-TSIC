@@ -296,6 +296,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
             if (!isNaN(uint8arrayString.substr(0, 2))) {
                 arrayKey = Number(uint8arrayString.substr(0, 2));
                 arrayVal = uint8arrayString.substr(2);
+                console.log('dataObj key val =>', arrayKey, arrayVal);
                 dataObjArr[arrayKey] = arrayVal;
             }
             console.log('BTL Get =>', uint8arrayString);
