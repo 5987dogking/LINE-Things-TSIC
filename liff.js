@@ -378,6 +378,7 @@ function liffGetButtonStateCharacteristic(characteristic) {
                         }
                     }
                     dataString = '';
+                    dataObjArr = [];
                 }
             } else {
                 if (uint8arrayStringHistory !== uint8arrayString) {
