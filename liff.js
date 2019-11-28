@@ -281,6 +281,7 @@ function liffGetPSDIService(service) {
 
 var dataString = '';
 var dataObj = {};
+var dataObjArr = [];
 var uint8arrayStringHistory = '';
 var reTryCount = 0;
 function liffGetButtonStateCharacteristic(characteristic) {
@@ -292,10 +293,19 @@ function liffGetButtonStateCharacteristic(characteristic) {
             const val = (new Uint8Array(e.target.value.buffer))[0];
             const uint8array = new Uint8Array(e.target.value.buffer);
             const uint8arrayString = new TextDecoder("utf-8").decode(uint8array);
+            if (isNaN(uint8arrayString.substr(0, 2))) {
+                arrayKey = uint8arrayString.substr(0, 2);
+                arrayVal = uint8arrayString.substr(2);
+                dataObjArr[arrayKey] = arrayVal;
+            }
             console.log('BTL Get =>', uint8arrayString);
             if (uint8arrayString === 'BTLend' && uint8arrayStringHistory !== 'BTLend') {
                 try {
-                    dataObj = JSON.parse(dataString);
+                    try {
+                        dataObj = JSON.parse(dataObjArr.join(''));
+                    } catch (error) {
+                        dataObj = JSON.parse(dataString);
+                    }
                     switch (window.app.dataMode) {
                         case 'refreshWifi':
                             window.app.wifiList = dataObj.data;
